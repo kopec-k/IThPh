@@ -5,6 +5,11 @@ from sys import argv
 # Third party imports
 import numpy as np
 
+import sympy as sp
+from sympy.physics.mechanics import dynamicsymbols
+
+from reader import read_input
+
 # Local imports
 import cprototype as cp
 import animation as anim
@@ -20,18 +25,39 @@ if len(argv) > 1:
         print(f"Number of particles is now set to randomly chosen: {NUMBER_OF_PARTICLES}")
 else:
     NUMBER_OF_PARTICLES = 1      # Number of particles in the simulation
-RADIUS              = 2.0    # Initial radius for particle placement
-dt                  = 0.01   # Timestep for the simulation
+RADIUS              = 1    # Initial radius for particle placement
+dt                  = 1   # Timestep for the simulation
+
+# === INPUT ===
+
+c_code_str = read_input()
+
+with open("../solver/solver.c", "r") as f:
+    original_solver_code = f.read()
+
+solver_code = original_solver_code + "\n\n" + c_code_str
+
+with open("../solver/solver_generated.c", "w") as f:
+    f.write(solver_code)
+
+# === C LIBRARY LOADING ===
+ccompiler = CSharedLibraryCompiler(source_file="../solver/solver_generated.c")
+__solver_path = ccompiler.compile()
+_libsolver = cp.EOMSolver(__solver_path, NUMBER_OF_PARTICLES, DIMENSIONS=2)
+
+# ======================================================================================
 
 # === C LIBRARY LOADING ===
 # Define the path to the compiled C library (.so file)
 # This assumes 'libsolver.so' is in a 'solve' directory one level *up*
 # from the directory containing this Python script.
-ccompiler = CSharedLibraryCompiler(source_file="../solver/solver.c")
-__solver_path = ccompiler.compile()
-_libsolver    = cp.EOMSolver(__solver_path, NUMBER_OF_PARTICLES, DIMENSIONS=2)
+#ccompiler = CSharedLibraryCompiler(source_file="../solver/solver.c")
+#__solver_path = ccompiler.compile()
+#_libsolver    = cp.EOMSolver(__solver_path, NUMBER_OF_PARTICLES, DIMENSIONS=2)
 
-# +== INITIAL CONDITIONS ===
+# ======================================================================================
+
+# === INITIAL CONDITIONS ===
 positions = [_libsolver.vector(x=RADIUS * np.cos(2 * np.pi * i / NUMBER_OF_PARTICLES),
                                y=RADIUS * np.sin(2 * np.pi * i / NUMBER_OF_PARTICLES))
              for i in range(NUMBER_OF_PARTICLES)]

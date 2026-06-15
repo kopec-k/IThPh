@@ -332,3 +332,23 @@ void next_3D(Vector3D* coord, Vector3D* vel, Vector3D* new_coord, Vector3D* new_
 	return;
 }
 
+
+
+void eom_generated(Vector2D* q, Vector2D* dq, Vector2D* _dq, Vector2D* _ddq, float t, size_t N) {
+    // Auto-generated Euler-Lagrange Equations using sympy.physics.mechanics
+    // Constants have been collapsed into their values.
+    for (size_t i = 0; i < N; ++i) {
+        _dq[i].x = dq[i].x;
+        _ddq[i].x = -0.01*q[i].x;
+        _dq[i].y = dq[i].y;
+        _ddq[i].y = -0.01*q[i].y;
+    }
+return;
+}
+
+void transform_to_cartesian(Vector2D* q, Vector2D* cart, size_t N) {
+    for(size_t i = 0; i < N; ++i) {
+        cart[i].x = q[i].x;
+        cart[i].y = q[i].y;
+    }
+}

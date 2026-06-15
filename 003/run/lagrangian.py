@@ -57,6 +57,7 @@ class LagrangianToC:
         # We substitute the sympy symbols with explicit C-string formatted symbols
         # e.g. theta(t) -> q[0], u_0 -> dq[0]
 
+        mapped_coord = ['x', 'y']
         subs_map = {}
 
         # Map coordinates q_i -> q[i]
@@ -84,14 +85,21 @@ class LagrangianToC:
             lines.append("    // Constants have been collapsed into their values.")
             for i,c in enumerate(constants):
                 lines.append(f"    float {c.name} = {i}.0{i+1} /* assign proper {c.name} value here */;")
-        for i, expr in enumerate(accel_exprs):
-            # Apply the substitution mapping
-            mapped_expr = expr.subs(subs_map)
+        
+        lines.append("    for (size_t i = 0; i < N; ++i) {")
+        for idx, expr in enumerate(accel_exprs):
+            local_subs = {}
+            for j, q_sym in enumerate(LM.q):
+                local_subs[q_sym] = sp.Symbol(f"q[i].{mapped_coord[j]}")
+            for j, u_sym in enumerate(LM.u):
+                local_subs[u_sym] = sp.Symbol(f"dq[i].{mapped_coord[j]}")
+            mapped_expr = expr.subs(local_subs)
 
             # Generate C code
             c_str = ccode(mapped_expr)
-            lines.append(f"    _dq[{i}] = dq[{i}];")
-            lines.append(f"    _ddq[{i}] = {c_str};")
+            lines.append(f"        _dq[i].{mapped_coord[idx]} = dq[i].{mapped_coord[idx]};")
+            lines.append(f"        _ddq[i].{mapped_coord[idx]} = {c_str};")
+        lines.append("    }")
 
         lines.append("return;")
         lines.append("}")

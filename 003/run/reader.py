@@ -7,10 +7,28 @@ def read_input(file_path="input.txt"):
     with open(file_path, "r") as f:
         content = f.read()
 
+    part_match = re.search(r"PARTICLES:\s*(\d+)", content)
+    num_particles = int(part_match.group(1)) if part_match else 1
+
     coord_match = re.search(r"COORDINATES:\s*(.*)", content)
     param_match = re.search(r"PARAMETERS:\s*(.*)", content)
     lagr_match = re.search(r"LAGRANGIAN:\s*(.*)", content)
     trans_match = re.search(r"TRANSFORMATIONS:\s*(.*?)\s*LAGRANGIAN:", content, re.DOTALL)
+
+    init_pos_match = re.search(r"INITIAL_POSITIONS:\s*(.*?)(?:INITIAL_VELOCITIES:|$)", content, re.DOTALL)
+    init_vel_match = re.search(r"INITIAL_VELOCITIES:\s*(.*?)(?:$)", content, re.DOTALL)
+
+    init_positions = []
+    if init_pos_match:
+        for line in init_pos_match.group(1).strip().split('\n'):
+            if line.strip():
+                init_positions.append([float(x) for x in line.split(',')])
+
+    init_velocities = []
+    if init_vel_match:
+        for line in init_vel_match.group(1).strip().split('\n'):
+            if line.strip():
+                init_velocities.append([float(x) for x in line.split(',')])
 
     coord_names = [c.strip() for c in coord_match.group(1).split(",")]
     t = dynamicsymbols._t
@@ -53,4 +71,4 @@ void transform_to_cartesian(Vector2D* q, Vector2D* cart, size_t N) {{
     gen.vectorType = "Vector2D"
     c_eom_code = gen.generate_c_function("eom_generated", collapse_constants=True)
 
-    return c_eom_code + "\n" + c_trans_code
+    return c_eom_code + "\n" + c_trans_code, num_particles, init_positions, init_velocities

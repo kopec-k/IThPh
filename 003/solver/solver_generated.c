@@ -339,9 +339,9 @@ void eom_generated(Vector2D* q, Vector2D* dq, Vector2D* _dq, Vector2D* _ddq, flo
     // Constants have been collapsed into their values.
     for (size_t i = 0; i < N; ++i) {
         _dq[i].x = dq[i].x;
-        _ddq[i].x = -0.01*q[i].x;
+        _ddq[i].x = -1.0*q[i].x;
         _dq[i].y = dq[i].y;
-        _ddq[i].y = -0.01*q[i].y;
+        _ddq[i].y = -1.0*q[i].y;
     }
 return;
 }

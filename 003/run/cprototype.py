@@ -122,4 +122,38 @@ class EOMSolver:
         else:
             raise ValueError("DIMENSIONS must be 1, 2, or 3.")
 
+    def transform_to_cartesian(self, q_list, cart_list, N):
+        try:
+            func = self.lib.transform_to_cartesian
+        except AttributeError:
+            print("Warning: No function transform_to_cartesian")
+            return
 
+        func.argtypes = [self.c_vec_ptr, self.c_vec_ptr, c_int]
+        func.restype = None
+
+        q_arr = self.c_arr(*q_list)
+        cart_arr = self.c_arr(*cart_list)
+        func(q_arr, cart_arr, N)
+
+        for i in range(N):
+            cart_list[i].x = cart_arr[i].x
+            cart_list[i].y = cart_arr[i].y
+            if self.DIMENSIONS == 3:
+                cart_list[i].z = cart_arr[i].z
+    
+    def step(self, coord_list, vel_list, dt):
+        size = self.NUMBER_OF_PARTICLES
+        new_coords = self.c_arr(*coord_list)
+        new_vels = self.c_arr(*vel_list)
+        
+        c_coords = self.c_arr(*coord_list)
+        c_vels = self.c_arr(*vel_list)
+        
+        self.next_step(c_coords, c_vels, new_coords, new_vels, float(dt), size)
+        
+        for i in range(size):
+            coord_list[i].x = new_coords[i].x
+            coord_list[i].y = new_coords[i].y
+            vel_list[i].x = new_vels[i].x
+            vel_list[i].y = new_vels[i].y

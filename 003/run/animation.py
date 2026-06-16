@@ -60,12 +60,9 @@ class Animation2D:
         # 'points' is a scatter plot of the particles themselves
         self.points = self.ax.scatter(self.data[:, 0], self.data[:, 1],
                       c=[clr for clr, _ in zip(self.colours, range(self.NUMBER_OF_PARTICLES))], s=57)
-
+    """
     def update_frame(self, frame):
-        """
-        This function is called for each frame of the animation.
-        It calculates the new state of the simulation and updates the plot.
-        """
+
         global positions,velocities
 
         # Create empty Vector2D objects to hold the C function results
@@ -102,6 +99,20 @@ class Animation2D:
         if self.NUMBER_OF_PARTICLES > 1:
             self.lines.set_xdata(np.append(self.data[:, 0], self.data[0, 0]))
             self.lines.set_ydata(np.append(self.data[:, 1], self.data[0, 1]))
+    """
+
+    def update_frame(self, frame):
+        self.next_step() 
+
+        for i, pos in enumerate(self.positions):
+            pos(self.data, i)
+
+        self.points.set_offsets(self.data)
+        if self.NUMBER_OF_PARTICLES > 1:
+            self.lines.set_xdata(np.append(self.data[:, 0], self.data[0, 0]))
+            self.lines.set_ydata(np.append(self.data[:, 1], self.data[0, 1]))
+        
+        return self.points,
 
     def run_animation(self,frames=60,interval=30):
         self.ani = animation.FuncAnimation(fig=self.fig, func=self.update_frame,

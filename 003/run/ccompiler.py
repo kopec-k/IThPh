@@ -97,6 +97,7 @@ class CSharedLibraryCompiler:
         # Add Source path
         cmd.append(str(target_source))
         cmd.append("-lm")
+        cmd.append("-fopenmp")
 
         # 5. Execute
         print(f"[Compiler] Executing: {' '.join(cmd)}")

@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
+#include <omp.h>
 // const float one_sixth  = 0x1.555556p-3f; // float 1/6
 // const double one_sixth = 0x1.5555555555555p-3; // double 1/6
 float RK4(float f, float x, float dt, float(*dfdx)(float,float)){
@@ -150,6 +151,7 @@ void RK4_2D(Vector2D* x, Vector2D* v, Vector2D* dx, Vector2D* dv, float t, float
 
 	// Calculate k1, k2, k3, k4
 	dfdx(x,v,k1_dx,k1_dv,t,N);
+	#pragma omp parallel for
 	for(size_t i=0U; i<N; ++i){
 		tmp_x[i].x = x[i].x + 0.5f * dt * k1_dx[i].x;
 		tmp_x[i].y = x[i].y + 0.5f * dt * k1_dx[i].y;
@@ -157,6 +159,7 @@ void RK4_2D(Vector2D* x, Vector2D* v, Vector2D* dx, Vector2D* dv, float t, float
 		tmp_v[i].y = v[i].y + 0.5f * dt * k1_dv[i].y;
 	}
 	dfdx(tmp_x,tmp_v,k2_dx,k2_dv,t+0.5f*dt,N);
+	#pragma omp parallel for
 	for(size_t i=0U; i<N; ++i){
 		tmp_x[i].x = x[i].x + 0.5f * dt * k2_dx[i].x;
 		tmp_x[i].y = x[i].y + 0.5f * dt * k2_dx[i].y;
@@ -164,6 +167,7 @@ void RK4_2D(Vector2D* x, Vector2D* v, Vector2D* dx, Vector2D* dv, float t, float
 		tmp_v[i].y = v[i].y + 0.5f * dt * k2_dv[i].y;
 	}
 	dfdx(tmp_x,tmp_v,k3_dx,k3_dv,t+0.5f*dt,N);
+	#pragma omp parallel for
 	for(size_t i=0U; i<N; ++i){
 		tmp_x[i].x = x[i].x + dt * k3_dx[i].x;
 		tmp_x[i].y = x[i].y + dt * k3_dx[i].y;
@@ -173,6 +177,7 @@ void RK4_2D(Vector2D* x, Vector2D* v, Vector2D* dx, Vector2D* dv, float t, float
 	dfdx(tmp_x,tmp_v,k4_dx,k4_dv,t+dt,N);
 
 	// Combine to get final dx and dv
+	#pragma omp parallel for
 	for(size_t i=0U; i<N; ++i){
 		dx[i].x = dt * one_sixth * (k1_dx[i].x + 2.0f * k2_dx[i].x + 2.0f * k3_dx[i].x + k4_dx[i].x);
 		dx[i].y = dt * one_sixth * (k1_dx[i].y + 2.0f * k2_dx[i].y + 2.0f * k3_dx[i].y + k4_dx[i].y);
@@ -205,6 +210,7 @@ void next_2D(Vector2D* coord, Vector2D* vel, Vector2D* new_coord, Vector2D* new_
 
     RK4_2D(coord, vel, dx, dv, current_time, dt, eom_generated, N);
 
+	#pragma omp parallel for
     for(size_t i=0U; i<N; ++i){
         new_coord[i].x = coord[i].x + dx[i].x;
         new_coord[i].y = coord[i].y + dx[i].y;

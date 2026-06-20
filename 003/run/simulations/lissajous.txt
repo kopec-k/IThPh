@@ -1,0 +1,11 @@
+PARTICLES: 1
+COORDINATES: x, y
+PARAMETERS: m = 1.0, kx = 1.0, ky = 2.25
+TRANSFORMATIONS:
+X = x
+Y = y
+LAGRANGIAN: 0.5 * m * (x_dot**2 + y_dot**2) - 0.5 * (kx * x**2 + ky * y**2)
+INITIAL_POSITIONS:
+1.0, 1.0
+INITIAL_VELOCITIES:
+0.0, 0.5

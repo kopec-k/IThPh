@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <math.h>
 // const float one_sixth  = 0x1.555556p-3f; // float 1/6
 // const double one_sixth = 0x1.5555555555555p-3; // double 1/6
 float RK4(float f, float x, float dt, float(*dfdx)(float,float)){
@@ -339,16 +340,16 @@ void eom_generated(Vector2D* q, Vector2D* dq, Vector2D* _dq, Vector2D* _ddq, flo
     // Constants have been collapsed into their values.
     for (size_t i = 0; i < N; ++i) {
         _dq[i].x = dq[i].x;
-        _ddq[i].x = -1.0*q[i].x;
+        _ddq[i].x = 1.0*pow(dq[i].y, 2)*q[i].x - 15.0*q[i].x + 9.8100000000000005*cos(q[i].y) + 22.5;
         _dq[i].y = dq[i].y;
-        _ddq[i].y = -1.0*q[i].y;
+        _ddq[i].y = 1.0*(-2.0*dq[i].x*dq[i].y*q[i].x - 9.8100000000000005*q[i].x*sin(q[i].y))/pow(q[i].x, 2);
     }
 return;
 }
 
 void transform_to_cartesian(Vector2D* q, Vector2D* cart, size_t N) {
     for(size_t i = 0; i < N; ++i) {
-        cart[i].x = q[i].x;
-        cart[i].y = q[i].y;
+        cart[i].x = q[i].x * sinf(q[i].y);
+        cart[i].y = -q[i].x * cosf(q[i].y);
     }
 }

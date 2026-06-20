@@ -45,18 +45,18 @@ class Animation2D:
         self.ax.set_aspect('equal', adjustable='box')  # Ensure x and y axes have the same scale
         # Set plot limits and labels
         if 'xlim' not in kwargs:
-            kwargs['xlim']=[-2.1, 2.1]
+            kwargs['xlim']=[-3.1, 3.1]
         if 'ylim' not in kwargs:
-            kwargs['ylim']=[-2.1, 2.1]
+            kwargs['ylim']=[-3.1, 3.1]
         if 'xlabel' not in kwargs:
             kwargs['xlabel']='x'
         if 'ylabel' not in kwargs:
             kwargs['ylabel']='y'
         self.ax.set(**kwargs)
-        if self.NUMBER_OF_PARTICLES > 1:
-            # Append first point to close the loop
-            self.lines = self.ax.plot(np.append(self.data[:, 0], self.data[0, 0]),
-                                      np.append(self.data[:, 1], self.data[0, 1]), lw=1)[0]
+        # if self.NUMBER_OF_PARTICLES > 1:
+        #     # Append first point to close the loop
+        #     self.lines = self.ax.plot(np.append(self.data[:, 0], self.data[0, 0]),
+        #                               np.append(self.data[:, 1], self.data[0, 1]), lw=1)[0]
         # 'points' is a scatter plot of the particles themselves
         self.points = self.ax.scatter(self.data[:, 0], self.data[:, 1],
                       c=[clr for clr, _ in zip(self.colours, range(self.NUMBER_OF_PARTICLES))], s=57)
@@ -108,9 +108,9 @@ class Animation2D:
             pos(self.data, i)
 
         self.points.set_offsets(self.data)
-        if self.NUMBER_OF_PARTICLES > 1:
-            self.lines.set_xdata(np.append(self.data[:, 0], self.data[0, 0]))
-            self.lines.set_ydata(np.append(self.data[:, 1], self.data[0, 1]))
+        # if self.NUMBER_OF_PARTICLES > 1:
+        #     self.lines.set_xdata(np.append(self.data[:, 0], self.data[0, 0]))
+        #     self.lines.set_ydata(np.append(self.data[:, 1], self.data[0, 1]))
         
         return self.points,
 

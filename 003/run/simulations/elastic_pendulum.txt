@@ -1,0 +1,11 @@
+PARTICLES: 1
+COORDINATES: r, phi
+PARAMETERS: m = 1.0, k = 15.0, l0 = 1.5, g = 9.81
+TRANSFORMATIONS:
+X = r * sin(phi)
+Y = -r * cos(phi)
+LAGRANGIAN: 0.5 * m * (r_dot**2 + r**2 * phi_dot**2) - 0.5 * k * (r - l0)**2 + m * g * r * cos(phi)
+INITIAL_POSITIONS:
+2.5, 0.785
+INITIAL_VELOCITIES:
+0.0, 0.0

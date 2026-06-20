@@ -3,7 +3,7 @@ import sympy as sp
 from sympy.physics.mechanics import dynamicsymbols
 from lagrangian import LagrangianToC
 
-def read_input(file_path="input.txt"):
+def load_simulation(file_path):
     with open(file_path, "r") as f:
         content = f.read()
 

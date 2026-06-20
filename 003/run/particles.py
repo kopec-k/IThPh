@@ -8,7 +8,7 @@ import numpy as np
 import sympy as sp
 from sympy.physics.mechanics import dynamicsymbols
 
-from reader import read_input
+from reader import load_simulation
 
 # Local imports
 import cprototype as cp
@@ -16,6 +16,8 @@ import animation as anim
 from ccompiler import CSharedLibraryCompiler
 
 # === CONSTANTS ===
+
+"""
 if len(argv) > 1:
     try:
         NUMBER_OF_PARTICLES = int(argv[1]) # Number of particles read from command line
@@ -27,10 +29,24 @@ else:
     NUMBER_OF_PARTICLES = 1      # Number of particles in the simulation
 RADIUS              = 1    # Initial radius for particle placement
 dt                  = 0.1   # Timestep for the simulation
+"""
+
+if len(argv) > 1:
+    try:
+        filename = argv[1]
+    except ValueError as e:
+        print(e)
+        filename = "simulations/harmonic.txt"
+        print(f"Filename is now set to default: {filename}")
+else:
+    print("No input file provided. Using default: 'input.txt'")
+    filename = "simulations/harmonic.txt"
+
+dt = 0.1   # Timestep for the simulation
 
 # === INPUT ===
 
-c_code_str, NUMBER_OF_PARTICLES, init_pos, init_vel = read_input()
+c_code_str, NUMBER_OF_PARTICLES, init_pos, init_vel = load_simulation(filename)
 
 with open("../solver/solver.c", "r") as f:
     original_solver_code = f.read()

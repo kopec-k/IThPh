@@ -1,0 +1,11 @@
+PARTICLES: 1
+COORDINATES: phi
+PARAMETERS: m = 1.0, l = 1.5, g = 9.81
+TRANSFORMATIONS:
+X = l * sin(phi)
+Y = -l * cos(phi)
+LAGRANGIAN: 0.5 * m * l**2 * phi_dot**2 + m * g * l * cos(phi)
+INITIAL_POSITIONS:
+0.75
+INITIAL_VELOCITIES:
+0.0

@@ -1,4 +1,4 @@
-PARTICLES: 2
+PARTICLES: 1
 COORDINATES: q1, q2
 PARAMETERS: m = 1.0, k = 1.0
 TRANSFORMATIONS:
@@ -6,8 +6,6 @@ X = q1
 Y = q2
 LAGRANGIAN: 0.5 * m * (q1_dot**2 + q2_dot**2) - 0.5 * k * (q1**2 + q2**2)
 INITIAL_POSITIONS:
-1.0, 0.0
--1.0, 0.0
+0.0, 0.0
 INITIAL_VELOCITIES:
-1.0, 0.0
-0.0, 0.1
+1.0, 1.0

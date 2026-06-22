@@ -39,7 +39,7 @@ if len(argv) > 1:
         filename = "simulations/harmonic.txt"
         print(f"Filename is now set to default: {filename}")
 else:
-    print("No input file provided. Using default: 'input.txt'")
+    print("No input file provided. Using default.")
     filename = "simulations/harmonic.txt"
 
 dt = 0.1   # Timestep for the simulation
@@ -79,7 +79,6 @@ gen_positions = [_libsolver.vector(x=init_pos[i][0], y=init_pos[i][1]) for i in 
 velocities = [_libsolver.vector(x=init_vel[i][0], y=init_vel[i][1]) for i in range(NUMBER_OF_PARTICLES)]
 
 cartesian_positions = [_libsolver.vector(x=0, y=0) for i in range(NUMBER_OF_PARTICLES)]
-
 _libsolver.transform_to_cartesian(gen_positions, cartesian_positions, NUMBER_OF_PARTICLES)
 
 # positions = [_libsolver.vector(x=RADIUS * np.cos(2 * np.pi * i / NUMBER_OF_PARTICLES),

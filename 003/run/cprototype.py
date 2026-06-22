@@ -139,8 +139,6 @@ class EOMSolver:
         for i in range(N):
             cart_list[i].x = cart_arr[i].x
             cart_list[i].y = cart_arr[i].y
-            if self.DIMENSIONS == 3:
-                cart_list[i].z = cart_arr[i].z
     
     def step(self, coord_list, vel_list, dt):
         size = self.NUMBER_OF_PARTICLES

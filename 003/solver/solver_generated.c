@@ -346,14 +346,16 @@ void eom_generated(Vector2D* q, Vector2D* dq, Vector2D* _dq, Vector2D* _ddq, flo
     // Constants have been collapsed into their values.
     for (size_t i = 0; i < N; ++i) {
         _dq[i].x = dq[i].x;
-        _ddq[i].x = -6.5399999999999991*sin(q[i].x);
+        _ddq[i].x = -1.0*q[i].x;
+        _dq[i].y = dq[i].y;
+        _ddq[i].y = -2.25*q[i].y;
     }
 return;
 }
 
 void transform_to_cartesian(Vector2D* q, Vector2D* cart, size_t N) {
     for(size_t i = 0; i < N; ++i) {
-        cart[i].x = 1.5 * sinf(q[i].x);
-        cart[i].y = -1.5 * cosf(q[i].x);
+        cart[i].x = q[i].x;
+        cart[i].y = q[i].y;
     }
 }
